@@ -1,27 +1,25 @@
 import React from "react"
-import { addDays, format } from "date-fns"
+import { format } from "date-fns"
 import { CalendarIcon } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
-import { Field, FieldLabel } from "@/components/ui/field"
+import { Field } from "@/components/ui/field"
+import { Label } from "@/components/ui/label"
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-function DatePickerWithRange() {
-  const [date, setDate] = React.useState({
-    from: new Date(new Date().getFullYear(), 0, 20),
-    to: addDays(new Date(new Date().getFullYear(), 0, 20), 20),
-  })
+function DatePickerWithRange({ date, setDate }) {
+  
 
   return (
     <Field className="w-full">
-      <FieldLabel htmlFor="date-picker-range">
+      <Label htmlFor="date-picker-range">
         Date Picker Range
-      </FieldLabel>
+      </Label>
 
       <Popover>
         <PopoverTrigger asChild>

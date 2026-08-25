@@ -1,12 +1,16 @@
+import React from "react"
+import { useEffect } from "react"
+
 import { useState } from "react"
 import axios from "axios"
 import { format } from "date-fns"
 
 //my components
-import DatePickerWithRange from "./DatePickerWithRange"
+import DatePickerWithRange from "@/components/HomePage-Components/DatePickerWithRange.jsx"
 
 // Shadcn Icons
-import { Plus } from "lucide-react"
+
+import { PenLine } from "lucide-react"
 
 // Shadcn UI Imports
 import { Button } from "@/components/ui/button"
@@ -25,8 +29,8 @@ import { Field, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-function CreateTripModal({ fetchTrips }) {
-  const [open, setOpen] = useState(false)  
+function EditTripModal({ trip, fetchTrips }) {
+  const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [departureFlight, setDepartureFlight] = useState("")
   const [returnFlight, setReturnFlight] = useState("")
@@ -40,7 +44,25 @@ function CreateTripModal({ fetchTrips }) {
   })
 
   // Default fallback image URL for testing
-    const defaultImage = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80"
+  const defaultImage =
+    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80"
+
+  //useEffect //to get the existing information in the fields
+  useEffect(() => {
+    if (trip) {
+      setTitle(trip.title || "")
+      setDepartureFlight(trip.departureFlight || "")
+      setReturnFlight(trip.returnFlight || "")
+      setCoverImage(trip.coverImage || defaultImage)
+      setDays(trip.days || 0)
+      setDate({
+        from: trip.startDate ? new Date(trip.startDate) : undefined,
+        to: trip.endDate ? new Date(trip.endDate) : undefined,
+      })
+    }
+  }, [trip, open])
+
+  //functions
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -48,22 +70,18 @@ function CreateTripModal({ fetchTrips }) {
     try {
       const body = {
         title,
-        startDate: date?.from ?format(date.from, "yyyy-MM-dd") : null,
-        endDate: date?.to ? format(date.to, "yyyy-MM-dd") : null, 
+        startDate: date?.from ? format(date.from, "yyyy-MM-dd") : null,
+        endDate: date?.to ? format(date.to, "yyyy-MM-dd") : null,
         departureFlight,
         returnFlight,
         coverImage: defaultImage,
         days,
       }
 
-      const response = await axios.post(`${import.meta.env.VITE_API_URL}/trips`, body)
-
-      // 1. Reset state
-      setTitle("")
-      setDepartureFlight("")
-      setReturnFlight("")
-      setCoverImage("")
-    //   setDate({ from: undefined, to: undefined })
+      const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/trips/${trip.id}`,
+        body
+      )
 
       setOpen(false)
       if (fetchTrips) fetchTrips()
@@ -76,22 +94,21 @@ function CreateTripModal({ fetchTrips }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="icon" aria-label="Create a new trip">
-          <Plus />
+        <Button size="icon" variant="outline" aria-label="Edit trip">
+          <PenLine />
         </Button>
       </DialogTrigger>
-      
-        <DialogContent className="sm:max-w-sm">
-           <form onSubmit={handleSubmit}> 
+
+      <DialogContent className="sm:max-w-sm">
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
               <span className="text-[1.3rem] font-semibold tracking-tight text-foreground">
-                Create new trip
+                Edit trip
               </span>
             </DialogTitle>
             <DialogDescription>
-              Start planning your next adventure. Add your stay dates and a few
-              details to get your trip underway.
+              Make some chnages to you trip.
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="py-4">
@@ -107,7 +124,10 @@ function CreateTripModal({ fetchTrips }) {
               />
             </Field>
 
-            <DatePickerWithRange date={date} setDate={setDate}></DatePickerWithRange>
+            <DatePickerWithRange
+              date={date}
+              setDate={setDate}
+            ></DatePickerWithRange>
 
             <Field>
               <Label htmlFor="Departure-flight">✈️ Departure flight</Label>
@@ -133,15 +153,16 @@ function CreateTripModal({ fetchTrips }) {
           </FieldGroup>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
             </DialogClose>
-            <Button type="submit">Create</Button>
+            <Button type="submit">Update</Button>
           </DialogFooter>
         </form>
-        </DialogContent>
-      
+      </DialogContent>
     </Dialog>
   )
 }
 
-export default CreateTripModal
+export default EditTripModal
