@@ -1,5 +1,5 @@
-import React from "react"
-import { Navigate, useNavigate, useParams } from "react-router-dom";
+import { useEffect, useState } from "react"
+import { useNavigate } from "react-router-dom"
 //components
 import EditTripModal from "./EditTripModal"
 import DeleteTripAlert from "./DeleteTripAlert";
@@ -7,17 +7,37 @@ import DeleteTripAlert from "./DeleteTripAlert";
 //shadcn components 
 import { Button } from "@/components/ui/button"
 
+
 //icons
 import { ArrowLeft } from "lucide-react"
-import { Trash2 } from "lucide-react"
 
 
 function NavbarTripDetails({ trip, fetchTrips }) {
+  const [isPastHero, setIsPastHero] = useState(false)
 
-  const navigate = useNavigate() // this is for navigate (to be used as a function)
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const hero = document.getElementById("trip-hero")
+
+    if (!hero) {
+      return undefined
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsPastHero(!entry.isIntersecting),
+      { threshold: 0 }
+    )
+
+    observer.observe(hero)
+
+    return () => observer.disconnect()
+  }, [])
 
   return (
-    <nav className="fixed inset-x-0 top-0 z-2 flex justify-between border-b border-b-[rgba(202,204,221,0.2)] px-[5vw] py-5">
+    <nav
+      className={`${isPastHero ? "bg-white text-foreground shadow-sm" : "bg-transparent"} fixed inset-x-0 top-0 z-50 flex justify-between px-[5vw] py-5 transition-colors lg:absolute lg:bg-transparent lg:shadow-none`}
+    >
       <Button variant="outline" size="icon" onClick={() => navigate("/")} >
         <ArrowLeft/>
       </Button>

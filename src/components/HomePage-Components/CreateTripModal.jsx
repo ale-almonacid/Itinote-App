@@ -80,6 +80,7 @@ function CreateTripModal({ fetchTrips }) {
       const generatedDays = createTripDays(date.from, date.to)
 
       const body = {
+        id: `trip-${Date.now()}`,
         title,
         startDate: date?.from ? format(date.from, "yyyy-MM-dd") : null,
         endDate: date?.to ? format(date.to, "yyyy-MM-dd") : null,
