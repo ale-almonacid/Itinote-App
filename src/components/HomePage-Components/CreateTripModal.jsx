@@ -41,7 +41,8 @@ function CreateTripModal({ fetchTrips }) {
   // Default fallback image URL for testing
     const defaultImage = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80"
 
-  //helper function
+  
+    //helper function
 
   function createTripDays(from, to) {
     if (!from || !to) {
