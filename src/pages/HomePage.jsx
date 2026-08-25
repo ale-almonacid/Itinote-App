@@ -22,7 +22,7 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               Your Journeys
             </h1>
-            <p>Explore, plan and manage your upcoming adventures</p>
+            <p className="text text-muted-foreground py-1">Explore, plan and manage your upcoming adventures</p>
           </div>
 
           <CreateTripModal fetchTrips={fetchTrips}></CreateTripModal>
