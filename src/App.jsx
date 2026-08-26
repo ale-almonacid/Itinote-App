@@ -16,6 +16,7 @@ import NotFoundPage from "@/pages/NotFoundPage"
 export function App() {
 
   const [allTrips, setAllTrips] = useState([])
+ 
   const [isLoading, setIsLoading] = useState(true)
   const navigate = useNavigate() // 1. Added useNavigate hook
 
@@ -48,11 +49,14 @@ export function App() {
   }, [])
 
 
+  
+
+
 
   return (
     <Routes>
       <Route path="/" element={<HomePage allTrips={allTrips} fetchTrips={fetchTrips} isLoading={isLoading} />} />
-      <Route path="/trips/:tripId" element={<TripDetailsPage allTrips={allTrips} fetchTrips={fetchTrips} />} />
+      <Route path="/trips/:tripId" element={<TripDetailsPage allTrips={allTrips} fetchTrips={fetchTrips}/>} />
       <Route path="*" element={<NotFoundPage />} />
     </Routes>
   )

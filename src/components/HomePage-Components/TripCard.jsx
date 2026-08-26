@@ -11,7 +11,7 @@ import {
 
 
 function TripCard({id, title, startDate, endDate, coverImage}) {
-    console.log("TripCard props received:", { id, title, startDate, endDate, coverImage });
+   
 
   
 

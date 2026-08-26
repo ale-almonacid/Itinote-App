@@ -1,15 +1,56 @@
-import { useParams } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
+import { useState, useEffect } from "react"
+import axios from "axios"
+
 
 import NavbarTripDetails from "@/components/TripDetailsPageComponents/NavbarTripDetails"
 import DaysCard from "@/components/TripDetailsPageComponents/DaysCard"
+import AccomodationCard from "@/components/accommodationComponents/AccomodationCard"
 
 //Shadcn
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Button } from "@/components/ui/button"
 
 function TripDetailsPage({ allTrips, fetchTrips }) {
   const { tripId } = useParams()
   const trip = allTrips.find((trip) => trip.id === tripId)
+
+  //states
+  const [allAccTrip, setAllAccTrip] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
+  const navigate = useNavigate() // 1. Added useNavigate hook
+
+
+  const fetchAccTrip = async () => {
+    setIsLoading(true)
+
+
+    try {
+      const response = await axios.get(`${import.meta.env.VITE_API_URL}/trips/${tripId}?_embed=accommodations`)
+      
+      
+      setAllAccTrip(response.data.accommodations || [])
+    } catch (error) {
+      console.error("Error fetching accommodations per trip:", error)
+
+      //redirect to error
+      if (error.response?.status === 404) {
+        navigate("/not-found")
+      } else {
+        navigate("/error")
+      }
+    } finally {
+      setIsLoading(false) // Runs on both success and error
+    }
+
+  }
+
+  useEffect(() => {
+    fetchAccTrip()
+  }, [tripId])
+
+
 
   return (
     <div className="min-h-screen w-full">
@@ -46,25 +87,29 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
         <div id="right-panel" className="w-full lg:w-1/2">
           <Tabs defaultValue="itinerary" className="w-full">
             <div className="sticky top-[72px] z-40 bg-white px-[5vw] py-4 lg:top-0">
-             <TabsList className="w-full justify-start">
-              <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
-              <TabsTrigger value="accommodation">Accommodation</TabsTrigger>
-            </TabsList> 
+              <TabsList className="w-full justify-start">
+                <TabsTrigger value="itinerary">Itinerary</TabsTrigger>
+                <TabsTrigger value="accommodation">Accommodation</TabsTrigger>
+              </TabsList>
             </div>
-            
 
             {/* Itinerary Tab */}
-            <TabsContent value="itinerary" className="w-full pt-4 px-[5vw] py-4">
+            <TabsContent
+              value="itinerary"
+              className="w-full px-[5vw] py-4 pt-4"
+            >
               <div className="w-full">
                 {/* Your DaysCard list goes here */}
 
-                <h1 className="text-2xl font-semibold tracking-tight text-foreground">
-                  Itinerary
-                </h1>
+                <div id="headerTab">
+                  <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                    Itinerary
+                  </h1>
 
-                <p className="text py-1 text-muted-foreground">
-                  {trip?.startDate} - {trip?.endDate}
-                </p>
+                  <p className="text py-1 text-muted-foreground">
+                    {trip?.startDate} - {trip?.endDate}
+                  </p>
+                </div>
 
                 <div className="flex w-full flex-col items-stretch gap-6 py-5">
                   {trip?.days?.map((day) => (
@@ -79,13 +124,43 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
             </TabsContent>
 
             {/* Accommodation Tab */}
-            <TabsContent value="accommodation" 
-            className="w-full pt-4 px-[5vw] py-4">
+            <TabsContent
+              value="accommodation"
+              className="w-full px-[5vw] py-4 pt-4"
+            >
               <div className="w-full">
                 {/* Accommodation content goes here */}
+
+                <div id="headerTab">
+
+                  <div className="flex flex-row w-full items-center justify-between">
+                    <h1 className="text-2xl font-semibold tracking-tight text-foreground">
+                      Accommodation
+                    </h1>
+
+                    <Button>Add</Button>
+                  </div>
+
+              
+                </div>
+
                 <p className="text-muted-foreground">
                   No accommodation details added yet.
                 </p>
+
+
+                 <div className="flex w-full flex-col items-stretch gap-6 py-5">
+                  {allAccTrip.map((acc) => (
+                    <AccomodationCard
+                      key={acc.id}
+                      accommodation={acc}
+                      allAccTrip={allAccTrip}
+                      trip={trip}
+              
+                    ></AccomodationCard>
+                  ))}
+                </div>
+
               </div>
             </TabsContent>
           </Tabs>
