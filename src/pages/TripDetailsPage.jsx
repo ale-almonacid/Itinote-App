@@ -13,6 +13,9 @@ import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Button } from "@/components/ui/button"
 
+//icons
+import { PlaneTakeoff, PlaneLanding } from "lucide-react"
+
 function TripDetailsPage({ allTrips, fetchTrips }) {
   const { tripId } = useParams()
   const trip = allTrips.find((trip) => trip.id === tripId)
@@ -68,14 +71,24 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
             className="relative min-h-[60vh] w-full bg-cover bg-center lg:h-screen lg:min-h-0"
             style={{ backgroundImage: `url(${trip?.coverImage})` }}
           >
-            <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-2 border-t border-t-[rgba(255,255,255,0.36)] bg-[rgba(22,34,56,0.32)] px-[5vw] py-5 text-white backdrop-blur-[4.5px]">
+            <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-2 border-t border-t-[rgba(255,255,255,0.36)] bg-[rgba(25,36,58,0.39)] px-[5vw] py-5 text-white backdrop-blur-[4.5px] lg:px-8 lg:py-8">
               <h1 className="text-2xl font-semibold">{trip?.title}</h1>
               <div>
                 {trip?.startDate} - {trip?.endDate}
               </div>
               <div className="flex flex-wrap gap-2">
-                {trip?.departureFlight && <Badge>{trip.departureFlight}</Badge>}
-                {trip?.returnFlight && <Badge>{trip.returnFlight}</Badge>}
+                {trip?.departureFlight && (
+                  <div className="flex h-6.25 w-fit flex-row items-center justify-start gap-1.5 rounded-[6px] border-[0.5px] border-white/20 bg-white/30 px-2.25 py-1.25 text-white">
+                    <PlaneTakeoff className="size-4! shrink-0" />
+                    <span className="text-sm">{trip.departureFlight}</span>
+                  </div>
+                )}
+                {trip?.returnFlight && (
+                  <div className="flex h-6.25 w-fit flex-row items-center justify-start gap-1.5 rounded-[6px] border-[0.5px] border-white/20 bg-white/30 px-2.25 py-1.25 text-white">
+                    <PlaneLanding className="size-4! shrink-0" />
+                    <span className="text-sm">{trip.returnFlight}</span>
+                  </div>
+                )}
               </div>
             </div>
           </header>
@@ -118,6 +131,7 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
                       key={`${trip.id}-${day.date}`}
                       trip={trip}
                       day={day}
+                      fetchTrips={fetchTrips}
                     ></DaysCard>
                   ))}
                 </div>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
 
 // Components & UI
@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input"
 //icons
 import { PlaneLanding, PlaneTakeoff } from "lucide-react"
 
-function DaysCard({ trip, day }) {
+function DaysCard({ trip, day, fetchTrips }) {
   // Day types based on backend values
   const isArrivalDay = day.type === "Arrival day"
   const isDepartureDay = day.type === "Departure day"
@@ -26,6 +26,13 @@ function DaysCard({ trip, day }) {
   const isTransportDay = dayType === "Transit"
   const isDefaultDay = dayType === "Default" || dayType === "Transit"
 
+  // Keep local state in sync when the trip is refreshed from the backend
+  useEffect(() => {
+    setDayType(day.type || "Default")
+    setTransitField(day.transitField || "")
+    setEditedNotes(day.notes || "")
+  }, [day.type, day.transitField, day.notes])
+
   // Helper to update trip days array on the backend
   async function updateTripDays(updatedDays) {
     setIsSaving(true)
@@ -34,6 +41,10 @@ function DaysCard({ trip, day }) {
         ...trip,
         days: updatedDays,
       })
+
+      if (fetchTrips) {
+        await fetchTrips()
+      }
     } catch (error) {
       console.error("Could not save trip details:", error)
     } finally {
@@ -43,6 +54,8 @@ function DaysCard({ trip, day }) {
 
   // Save notes on blur
   function handleNotesBlur() {
+    if (editedNotes === (day.notes || "")) return
+
     const updatedDays = trip.days.map((currentDay) =>
       currentDay.date === day.date
         ? { ...currentDay, notes: editedNotes }

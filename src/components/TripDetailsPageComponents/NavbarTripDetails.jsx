@@ -36,7 +36,7 @@ function NavbarTripDetails({ trip, fetchTrips }) {
 
   return (
     <nav
-      className={`${isPastHero ? "bg-white text-foreground shadow-sm" : "bg-transparent"} fixed inset-x-0 top-0 z-50 flex justify-between px-[5vw] py-5 transition-colors lg:absolute lg:bg-transparent lg:shadow-none`}
+      className={`${isPastHero ? "bg-white text-foreground shadow-sm" : "bg-transparent"} fixed inset-x-0 top-0 z-50 flex justify-between px-[5vw] py-5 transition-colors lg:absolute lg:bg-transparent lg:shadow-none lg:px-8 lg:py-8`}
     >
       <Button variant="outline" size="icon" onClick={() => navigate("/")} >
         <ArrowLeft/>

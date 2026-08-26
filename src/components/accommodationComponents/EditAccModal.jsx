@@ -1,13 +1,12 @@
-import React from "react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import axios from "axios"
-import { eachDayOfInterval, format } from "date-fns"
+import { format } from "date-fns"
 
 //my components
 import DatePickerWithRange from "@/components/HomePage-Components/DatePickerWithRange.jsx"
 
 // Shadcn Icons
-import { Plus } from "lucide-react"
+import { PenLine } from "lucide-react"
 
 // Shadcn UI Imports
 import { Button } from "@/components/ui/button"
@@ -26,7 +25,7 @@ import { Field, FieldError, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-function CreateAccModal({ tripId, fetchAccTrip }) {
+function EditAccModal({ accommodation, fetchAccTrip }) {
   const [open, setOpen] = useState(false)
   const [name, setName] = useState("")
   const [address, setAddress] = useState("")
@@ -41,6 +40,27 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
     to: undefined,
   })
 
+  // Prefill the form with this accommodation's current data whenever the
+  // dialog is opened (or the underlying data changes while it's open).
+  useEffect(() => {
+    if (!open || !accommodation) return
+
+    setName(accommodation.name || "")
+    setAddress(accommodation.address || "")
+    setCity(accommodation.city || "")
+    setCheckInTime(accommodation.checkInTime || "")
+    setCheckOutTime(accommodation.checkOutTime || "")
+    setDate({
+      from: accommodation.checkInDate
+        ? new Date(accommodation.checkInDate)
+        : undefined,
+      to: accommodation.checkOutDate
+        ? new Date(accommodation.checkOutDate)
+        : undefined,
+    })
+    setDateError("")
+  }, [open, accommodation])
+
   const handleSubmit = async (e) => {
     e.preventDefault()
 
@@ -52,7 +72,6 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
 
     try {
       const body = {
-        tripId,
         name,
         address,
         city,
@@ -62,18 +81,11 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
         checkOutTime,
       }
 
-      await axios.post(
-        `${import.meta.env.VITE_API_URL}/accommodations`,
+      await axios.patch(
+        `${import.meta.env.VITE_API_URL}/accommodations/${accommodation.id}`,
         body
       )
 
-      setName("")
-      setAddress("")
-      setCity("")
-      setCheckInTime("")
-      setCheckOutTime("")
-      setDate({ from: undefined, to: undefined })
-      setDateError("")
       setOpen(false)
 
       //  Trigger local refetch to re-render accommodation list
@@ -88,8 +100,8 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button size="icon" aria-label="Create a new Accommodation">
-          <Plus />
+        <Button variant="outline" size="icon" aria-label="Edit accommodation">
+          <PenLine />
         </Button>
       </DialogTrigger>
 
@@ -98,11 +110,11 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
           <DialogHeader>
             <DialogTitle>
               <span className="text-[1.05rem] font-semibold tracking-tight text-foreground">
-                Add Accommodation
+                Edit Accommodation
               </span>
             </DialogTitle>
             <DialogDescription>
-              Add a new entry for the accommodation
+              Update the details for this accommodation
             </DialogDescription>
           </DialogHeader>
           <FieldGroup className="py-4">
@@ -150,36 +162,30 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
             <FieldError errors={dateError ? [{ message: dateError }] : []} />
 
             <div id="timefieldswrapper" className="flex flex-row gap-7">
+              <Field className="w-32">
+                <Label htmlFor="checkInTime">Check-in Time</Label>
+                <Input
+                  type="time"
+                  id="checkInTime"
+                  value={checkInTime}
+                  placeholder="10:30:00"
+                  onChange={(e) => setCheckInTime(e.target.value)}
+                  className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                />
+              </Field>
 
-            <Field className="w-32">
-              <Label htmlFor="checkInTime">Check-in Time</Label>
-              <Input
-                type="time"
-                id="checkInTime"
-                value={checkInTime}
-                placeholder="10:30:00"
-                onChange={(e) => setCheckInTime(e.target.value)}
-                className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-              />
-            </Field>
-
-            <Field className="w-32">
-              <Label htmlFor="checkOutTime">Check-out Time</Label>
-              <Input
-                type="time"
-                id="checkOutTime"
-                value={checkOutTime}
-                placeholder="10:30:00"
-                onChange={(e) => setCheckOutTime(e.target.value)}
-                className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
-
-              />
-            </Field>
-
+              <Field className="w-32">
+                <Label htmlFor="checkOutTime">Check-out Time</Label>
+                <Input
+                  type="time"
+                  id="checkOutTime"
+                  value={checkOutTime}
+                  placeholder="10:30:00"
+                  onChange={(e) => setCheckOutTime(e.target.value)}
+                  className="appearance-none bg-background [&::-webkit-calendar-picker-indicator]:hidden [&::-webkit-calendar-picker-indicator]:appearance-none"
+                />
+              </Field>
             </div>
-
-
-
           </FieldGroup>
           <DialogFooter>
             <DialogClose asChild>
@@ -187,7 +193,7 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
                 Cancel
               </Button>
             </DialogClose>
-            <Button type="submit">Create</Button>
+            <Button type="submit">Save changes</Button>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -195,4 +201,4 @@ function CreateAccModal({ tripId, fetchAccTrip }) {
   )
 }
 
-export default CreateAccModal
+export default EditAccModal

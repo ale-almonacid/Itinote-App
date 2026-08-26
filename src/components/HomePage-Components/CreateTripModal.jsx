@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 
-import { Field, FieldGroup } from "@/components/ui/field"
+import { Field, FieldError, FieldGroup } from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
@@ -30,6 +30,7 @@ function CreateTripModal({ fetchTrips }) {
   const [title, setTitle] = useState("")
   const [departureFlight, setDepartureFlight] = useState("")
   const [returnFlight, setReturnFlight] = useState("")
+  const [dateError, setDateError] = useState("")
 
   // Single date range object state
   const [date, setDate] = useState({
@@ -75,6 +76,12 @@ function CreateTripModal({ fetchTrips }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
 
+    if (!date?.from || !date?.to) {
+      setDateError("Please select a start and end date.")
+      return
+    }
+    setDateError("")
+
     try {
       const generatedDays = createTripDays(date.from, date.to)
 
@@ -95,6 +102,7 @@ function CreateTripModal({ fetchTrips }) {
       setDepartureFlight("")
       setReturnFlight("")
       setDate({ from: undefined, to: undefined })
+      setDateError("")
       setOpen(false)
 
       if (fetchTrips) {
@@ -136,6 +144,7 @@ function CreateTripModal({ fetchTrips }) {
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g. Trip to Greece"
+                required
               />
             </Field>
 
@@ -143,6 +152,7 @@ function CreateTripModal({ fetchTrips }) {
               date={date}
               setDate={setDate}
             ></DatePickerWithRange>
+            <FieldError errors={dateError ? [{ message: dateError }] : []} />
 
             <Field>
               <Label htmlFor="Departure-flight">✈️ Departure flight</Label>
