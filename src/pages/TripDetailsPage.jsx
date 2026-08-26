@@ -6,6 +6,7 @@ import axios from "axios"
 import NavbarTripDetails from "@/components/TripDetailsPageComponents/NavbarTripDetails"
 import DaysCard from "@/components/TripDetailsPageComponents/DaysCard"
 import AccomodationCard from "@/components/accommodationComponents/AccomodationCard"
+import CreateAccModal from "@/components/accommodationComponents/CreateAccModal"
 
 //Shadcn
 import { Badge } from "@/components/ui/badge"
@@ -138,7 +139,11 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
                       Accommodation
                     </h1>
 
-                    <Button>Add</Button>
+                    <CreateAccModal
+                    fetchAccTrip={fetchAccTrip}
+                    tripId={tripId}></CreateAccModal>
+
+                    
                   </div>
 
               

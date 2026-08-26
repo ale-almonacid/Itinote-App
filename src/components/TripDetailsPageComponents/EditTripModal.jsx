@@ -3,7 +3,7 @@ import { useEffect } from "react"
 
 import { useState } from "react"
 import axios from "axios"
-import { format } from "date-fns"
+import {eachDayOfInterval, format } from "date-fns"
 
 //my components
 import DatePickerWithRange from "@/components/HomePage-Components/DatePickerWithRange.jsx"
@@ -35,7 +35,7 @@ function EditTripModal({ trip, fetchTrips }) {
   const [departureFlight, setDepartureFlight] = useState("")
   const [returnFlight, setReturnFlight] = useState("")
   const [coverImage, setCoverImage] = useState("")
-  const [days, setDays] = useState(0)
+ 
 
   // Single date range object state
   const [date, setDate] = useState({
@@ -54,7 +54,6 @@ function EditTripModal({ trip, fetchTrips }) {
       setDepartureFlight(trip.departureFlight || "")
       setReturnFlight(trip.returnFlight || "")
       setCoverImage(trip.coverImage || defaultImage)
-      setDays(trip.days || 0)
       setDate({
         from: trip.startDate ? new Date(trip.startDate) : undefined,
         to: trip.endDate ? new Date(trip.endDate) : undefined,
@@ -62,20 +61,67 @@ function EditTripModal({ trip, fetchTrips }) {
     }
   }, [trip, open])
 
+  //helper function to update days
+
+  function updateTripDays(from, to, existingDays = []) {
+    if (!from || !to) {
+      return []
+    }
+
+    const dates = eachDayOfInterval({
+      start: from,
+      end: to,
+    })
+
+    return dates.map((day, index) => {
+      const formattedDate = format(day, "yyyy-MM-dd")
+      let dayType = "Default"
+
+      if (index === 0) {
+        dayType = "Arrival day"
+      } else if (index === dates.length - 1) {
+        dayType = "Departure day"
+      }
+
+      const existingDay = existingDays.find((d) => d.date === formattedDate)
+
+      if (existingDay) {
+        // Keep existing notes and fields, but update the day type
+        return {
+          ...existingDay,
+          type: dayType,
+        }
+      }
+
+      return {
+        date: format(day, "yyyy-MM-dd"),
+        type: dayType,
+        transitField: "",
+        accommodationId: "",
+        notes: "",
+      }
+    })
+  }
+
   //functions
 
   const handleSubmit = async (e) => {
     e.preventDefault()
 
     try {
+
+      // Generate/re-align days array while keeping existing notes
+      const updatedDays = updateTripDays(date.from, date.to, trip?.days || [])
+
       const body = {
+        ...trip,
         title,
         startDate: date?.from ? format(date.from, "yyyy-MM-dd") : null,
         endDate: date?.to ? format(date.to, "yyyy-MM-dd") : null,
         departureFlight,
         returnFlight,
-        coverImage: defaultImage,
-        days,
+        coverImage: coverImage || defaultImage,
+        days: updatedDays,
       }
 
       const response = await axios.put(

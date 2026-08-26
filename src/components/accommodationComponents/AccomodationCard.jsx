@@ -12,6 +12,10 @@ import {
 } from "@/components/ui/card"
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
+import { Button } from "@/components/ui/button"
+
+import { Trash2 } from "lucide-react"
+
 
 function AccomodationCard({ accommodation, allAccTrip, trip }) {
   const [editedNotes, setEditedNotes] = useState(accommodation.notes || "")
@@ -52,7 +56,19 @@ function AccomodationCard({ accommodation, allAccTrip, trip }) {
 
   return (
     <Card size="sm" className="w-full">
-      <CardHeader>
+      <CardHeader className="relative">
+
+        <div className="absolute top-0 right-3 flex flex-wrap items-center gap-2 md:flex-row">
+          
+          <Button variant="outline" size="icon" aria-label="Submit">
+          <Trash2 />
+        </Button> 
+
+        <Button variant="outline" size="icon" aria-label="Submit">
+          <Trash2 />
+        </Button> 
+      </div>
+
         <CardDescription>{accommodation?.city}</CardDescription>
         <CardTitle>{accommodation?.name}</CardTitle>
 

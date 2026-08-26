@@ -26,11 +26,10 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 function CreateTripModal({ fetchTrips }) {
-  const [open, setOpen] = useState(false)  
+  const [open, setOpen] = useState(false)
   const [title, setTitle] = useState("")
   const [departureFlight, setDepartureFlight] = useState("")
   const [returnFlight, setReturnFlight] = useState("")
- 
 
   // Single date range object state
   const [date, setDate] = useState({
@@ -39,10 +38,10 @@ function CreateTripModal({ fetchTrips }) {
   })
 
   // Default fallback image URL for testing
-    const defaultImage = "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80"
+  const defaultImage =
+    "https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=1000&q=80"
 
-  
-    //helper function
+  //helper function
 
   function createTripDays(from, to) {
     if (!from || !to) {
@@ -113,9 +112,9 @@ function CreateTripModal({ fetchTrips }) {
           <Plus />
         </Button>
       </DialogTrigger>
-      
-        <DialogContent className="sm:max-w-sm">
-           <form onSubmit={handleSubmit}> 
+
+      <DialogContent className="sm:max-w-sm">
+        <form onSubmit={handleSubmit}>
           <DialogHeader>
             <DialogTitle>
               <span className="text-[1.3rem] font-semibold tracking-tight text-foreground">
@@ -140,7 +139,10 @@ function CreateTripModal({ fetchTrips }) {
               />
             </Field>
 
-            <DatePickerWithRange date={date} setDate={setDate}></DatePickerWithRange>
+            <DatePickerWithRange
+              date={date}
+              setDate={setDate}
+            ></DatePickerWithRange>
 
             <Field>
               <Label htmlFor="Departure-flight">✈️ Departure flight</Label>
@@ -166,13 +168,14 @@ function CreateTripModal({ fetchTrips }) {
           </FieldGroup>
           <DialogFooter>
             <DialogClose asChild>
-              <Button type="button" variant="outline">Cancel</Button>
+              <Button type="button" variant="outline">
+                Cancel
+              </Button>
             </DialogClose>
             <Button type="submit">Create</Button>
           </DialogFooter>
         </form>
-        </DialogContent>
-      
+      </DialogContent>
     </Dialog>
   )
 }
