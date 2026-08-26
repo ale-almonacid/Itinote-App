@@ -13,11 +13,12 @@ import {
 import { Textarea } from "@/components/ui/textarea"
 import { Separator } from "@/components/ui/separator"
 import { Button } from "@/components/ui/button"
+import DeleteAccAlert from "./DeleteAccAlert"
 
 import { Trash2 } from "lucide-react"
 
 
-function AccomodationCard({ accommodation, allAccTrip, trip }) {
+function AccomodationCard({ accommodation, allAccTrip, trip,fetchAccTrip, tripId }) {
   const [editedNotes, setEditedNotes] = useState(accommodation.notes || "")
   const [isSaving, setIsSaving] = useState(false)
 
@@ -64,16 +65,21 @@ function AccomodationCard({ accommodation, allAccTrip, trip }) {
           <Trash2 />
         </Button> 
 
-        <Button variant="outline" size="icon" aria-label="Submit">
-          <Trash2 />
-        </Button> 
+
+        <DeleteAccAlert
+        accommodationId={accommodation.id}
+        fetchAccTrip={fetchAccTrip}
+        />
+
       </div>
 
         <CardDescription>{accommodation?.city}</CardDescription>
         <CardTitle>{accommodation?.name}</CardTitle>
 
         <p>{accommodation?.address}</p>
-        <Separator />
+       
+        <Separator/>
+        
       </CardHeader>
 
       <CardContent className="flex flex-col gap-2">

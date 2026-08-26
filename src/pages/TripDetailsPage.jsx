@@ -161,6 +161,8 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
                       accommodation={acc}
                       allAccTrip={allAccTrip}
                       trip={trip}
+                      fetchAccTrip={fetchAccTrip}
+                      tripId={tripId}
               
                     ></AccomodationCard>
                   ))}
