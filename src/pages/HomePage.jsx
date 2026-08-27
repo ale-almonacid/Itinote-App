@@ -21,7 +21,7 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
   return (
     <>
     <NavbarHomePage></NavbarHomePage>
-      <div id="content" className="view px-[5vw] pb-8">
+      <div id="content" className="mx-auto w-full max-w-360 px-[5vw] pb-8">
         <header className="relative flex w-full flex-wrap items-start gap-2 py-8 md:flex-nowrap md:items-center">
 
           <div className="order-1 pr-14 md:pr-0">
@@ -35,7 +35,7 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
             <CreateTripModal fetchTrips={fetchTrips}></CreateTripModal>
           </div>
 
-          <div className="order-3 w-full md:order-2 md:ml-auto md:w-74">
+          <div className="order-3 w-full md:order-2 md:ml-auto md:w-76">
             <Searchbar  query={query} setQuery={setQuery}/>
           </div>
 
@@ -43,7 +43,7 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
 
         <div
           id="card-wrapper"
-          className="grid grid-cols-1 gap-6 md:grid-cols-3"
+          className="grid grid-cols-1 gap-12 md:grid-cols-2 lg:grid-cols-3"
         >
           {allTrips
           
