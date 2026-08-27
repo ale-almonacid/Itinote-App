@@ -18,7 +18,7 @@ function TripCard({id, title, startDate, endDate, coverImage}) {
   return (
     <Link to={`/trips/${id}`} className="no-underline block">
 
-     <Card className="relative mx-auto w-full max-w-sm pt-0">
+     <Card className="relative w-full pt-0 md:mx-auto md:max-w-sm">
       
       <img
         src={coverImage}

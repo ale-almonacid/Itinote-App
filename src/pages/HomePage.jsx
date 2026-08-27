@@ -4,6 +4,7 @@
 import TripCard from "@/components/HomePage-Components/TripCard"
 import CreateTripModal from "@/components/HomePage-Components/CreateTripModal"
 import NavbarHomePage from "@/components/HomePage-Components/NavbarHomePage"
+import Searchbar from "@/components/HomePage-Components/Searchbar"
 
 //Shadcn
 
@@ -17,15 +18,23 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
     <>
     <NavbarHomePage></NavbarHomePage>
       <div id="content" className="view px-[5vw]">
-        <header className="flex w-full items-center justify-between py-8">
-          <div>
+        <header className="relative flex w-full flex-wrap items-start gap-2 py-8 md:flex-nowrap md:items-center">
+
+          <div className="order-1 pr-14 md:pr-0">
             <h1 className="text-2xl font-semibold tracking-tight text-foreground">
               Your Journeys
             </h1>
-            <p className="text text-muted-foreground py-1">Explore, plan and manage your upcoming adventures</p>
+            <p className="text text-muted-foreground py-0.5">Explore, plan and manage your upcoming adventures</p>
           </div>
 
-          <CreateTripModal fetchTrips={fetchTrips}></CreateTripModal>
+          <div className="absolute top-8 right-0 md:static md:order-3">
+            <CreateTripModal fetchTrips={fetchTrips}></CreateTripModal>
+          </div>
+
+          <div className="order-3 w-full md:order-2 md:ml-auto md:w-74">
+            <Searchbar />
+          </div>
+
         </header>
 
         <div
@@ -33,7 +42,8 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
           className="grid grid-cols-1 gap-6 md:grid-cols-3"
         >
           {allTrips.map((trip) => (
-             <TripCard key={trip.id} {...trip} to={``}></TripCard>
+             <TripCard className="w-full"
+             key={trip.id} {...trip} to={``}></TripCard>
           ))}
 
         </div>
