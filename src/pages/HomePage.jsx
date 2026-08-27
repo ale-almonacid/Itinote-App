@@ -17,7 +17,7 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
   return (
     <>
     <NavbarHomePage></NavbarHomePage>
-      <div id="content" className="view px-[5vw]">
+      <div id="content" className="view px-[5vw] pb-8">
         <header className="relative flex w-full flex-wrap items-start gap-2 py-8 md:flex-nowrap md:items-center">
 
           <div className="order-1 pr-14 md:pr-0">
