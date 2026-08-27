@@ -5,11 +5,15 @@ import TripCard from "@/components/HomePage-Components/TripCard"
 import CreateTripModal from "@/components/HomePage-Components/CreateTripModal"
 import NavbarHomePage from "@/components/HomePage-Components/NavbarHomePage"
 import Searchbar from "@/components/HomePage-Components/Searchbar"
+import { useState } from "react"
 
 //Shadcn
 
 function HomePage({allTrips, fetchTrips, isLoading}) {
-  
+
+  //state for search functionality (must be before si loading)
+  const [query, setQuery] = useState("");
+
   if (isLoading) {
     return <h2>Loading ...</h2>
   }
@@ -32,7 +36,7 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
           </div>
 
           <div className="order-3 w-full md:order-2 md:ml-auto md:w-74">
-            <Searchbar />
+            <Searchbar  query={query} setQuery={setQuery}/>
           </div>
 
         </header>
@@ -41,7 +45,14 @@ function HomePage({allTrips, fetchTrips, isLoading}) {
           id="card-wrapper"
           className="grid grid-cols-1 gap-6 md:grid-cols-3"
         >
-          {allTrips.map((trip) => (
+          {allTrips
+          
+          //Search functionality
+          .filter((trip) => {
+            return trip.title.toLowerCase().includes(query.toLowerCase());
+          })
+          
+          .map((trip) => (
              <TripCard className="w-full"
              key={trip.id} {...trip} to={``}></TripCard>
           ))}
