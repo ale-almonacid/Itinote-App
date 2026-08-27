@@ -85,6 +85,32 @@ function CreateTripModal({ fetchTrips }) {
     try {
       const generatedDays = createTripDays(date.from, date.to)
 
+      // Search Unsplash using the trip title
+
+      let coverImage = defaultImage
+
+      try {
+        const unsplashResponse = await axios.get(
+          `${import.meta.env.VITE_API_URL}/unsplash/search`,
+
+          {
+            params: {
+              query: title,
+            },
+          }
+        )
+
+        // Unsplash uses "results" instead of "photos"
+
+        if (unsplashResponse.data.results?.length > 0) {
+          coverImage = unsplashResponse.data.results[0].urls.regular
+        }
+      } catch (unsplashError) {
+        // If Unsplash fails, we still create the trip with the fallback image
+
+        console.error("Unsplash image search failed:", unsplashError)
+      }
+
       const body = {
         id: `trip-${Date.now()}`,
         title,
@@ -92,7 +118,7 @@ function CreateTripModal({ fetchTrips }) {
         endDate: date?.to ? format(date.to, "yyyy-MM-dd") : null,
         departureFlight,
         returnFlight,
-        coverImage: defaultImage,
+        coverImage,
         days: generatedDays,
       }
 
