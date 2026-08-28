@@ -163,9 +163,7 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
               
                 </div>
 
-                <p className="text-muted-foreground">
-                  No accommodation details added yet.
-                </p>
+                
 
 
                  <div className="flex w-full flex-col items-stretch gap-6 py-5">
