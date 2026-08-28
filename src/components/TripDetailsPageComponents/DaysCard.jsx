@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
+import { format, parseISO } from "date-fns"
+
 
 // Components & UI
 import ToggleButton from "./ToggleButton"
@@ -52,6 +54,12 @@ function DaysCard({ trip, day, fetchTrips }) {
     }
   }
 
+  // Helper to safely format ISO strings ("2026-08-13" -> "13 Aug 2026")
+  const formatDate = (dateString) => {
+    if (!dateString) return ""
+    return format(parseISO(dateString), "d MMM yyyy")
+  }
+
   // Save notes on blur
   function handleNotesBlur() {
     if (editedNotes === (day.notes || "")) return
@@ -96,7 +104,7 @@ function DaysCard({ trip, day, fetchTrips }) {
       <CardHeader className="gap-3">
         <div className="flex flex-row items-center justify-between">
           <CardTitle className="text-[18px] font-semibold">
-            {day.date}
+            {day.displayDate || formatDate(day.date)}
           </CardTitle>
 
           <div className="flex items-center gap-2">

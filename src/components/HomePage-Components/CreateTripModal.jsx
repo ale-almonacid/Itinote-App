@@ -65,6 +65,7 @@ function CreateTripModal({ fetchTrips }) {
 
       return {
         date: format(day, "yyyy-MM-dd"),
+        displayDate: format(day, "d MMM yyyy"),
         type: dayType,
         transitField: "",
         accommodationId: "",

@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom"
 import { useState, useEffect } from "react"
+import { format, parseISO } from "date-fns"
 import axios from "axios"
 
 
@@ -54,6 +55,12 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
     fetchAccTrip()
   }, [tripId])
 
+  // Helper to safely format ISO strings ("2026-08-13" -> "13 Aug 2026")
+  const formatDate = (dateString) => {
+    if (!dateString) return ""
+    return format(parseISO(dateString), "d MMM yyyy")
+  }
+
 
 
   return (
@@ -74,7 +81,7 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
             <div className="absolute right-0 bottom-0 left-0 flex flex-col gap-2 border-t border-t-[rgba(255,255,255,0.36)] bg-[rgba(25,36,58,0.39)] px-[5vw] py-5 text-white backdrop-blur-[4.5px] lg:px-8 lg:py-8">
               <h1 className="text-2xl font-semibold">{trip?.title}</h1>
               <div>
-                {trip?.startDate} - {trip?.endDate}
+                {formatDate(trip?.startDate)} - {formatDate(trip?.endDate)}
               </div>
               <div className="flex flex-wrap gap-2">
                 {trip?.departureFlight && (
@@ -121,7 +128,7 @@ function TripDetailsPage({ allTrips, fetchTrips }) {
                   </h1>
 
                   <p className="text py-1 text-muted-foreground">
-                    {trip?.startDate} - {trip?.endDate}
+                    {formatDate(trip?.startDate)} - {formatDate(trip?.endDate)}
                   </p>
                 </div>
 

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { format, parseISO } from "date-fns"
 
 
 
@@ -12,7 +13,11 @@ import {
 
 function TripCard({id, title, startDate, endDate, coverImage}) {
    
-
+    // Helper to safely format ISO strings ("2026-08-13" -> "13 Aug 2026")
+  const formatDate = (dateString) => {
+    if (!dateString) return ""
+    return format(parseISO(dateString), "d MMM yyyy")
+  }
   
 
   return (
@@ -28,7 +33,7 @@ function TripCard({id, title, startDate, endDate, coverImage}) {
       <CardHeader>
         <CardTitle>{title}</CardTitle>
         <CardDescription>
-          {startDate} - {endDate}
+          {formatDate(startDate)} - {formatDate(endDate)}
         </CardDescription>
       </CardHeader>
      
